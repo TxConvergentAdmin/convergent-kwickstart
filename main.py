@@ -1,38 +1,46 @@
-import subprocess
-# returns output as byte string
-#returned_output = subprocess.check_output('yarn --version', shell=True)
-#print('v:', returned_output.decode("utf-8"))
-
-import regex
-from pprint import pprint
-
-from PyInquirer import style_from_dict, Token, prompt
+from kwickstart.techs import TECHS
+from kwickstart.util import *
+from PyInquirer import prompt
+import os
 
 
-questions = [
-    {
-        'type': 'input',
-        'name': 'name',
-        'message': 'What the name of the project?',
-    },
-    {
-        'type': 'checkbox',
-        'name': 'Frameworks',
-        'message': 'What are you using?',
-        'choices': [
-            {'name': 'React'},
-            {'name': 'ReactNative'},
-            {'name': 'Firebase'},
-        ]
-    }, 
-    {
-        'type': 'confirm',
-        'name': 'begin',
-        'message': 'Begin install?',
-        'default': False
-    }
-]
+def main():
 
-answers = prompt(questions)
-print('Order receipt:')
-pprint(answers)
+    form = [
+        {
+            'type': 'input',
+            'name': 'name',
+            'default': 'cvgt-project',
+            'message': 'What the name of the project?',
+        },
+        {
+            'type': 'input',
+            'name': 'path',
+            'default': lambda resp: os.path.join(get_default_path(), resp['name']),
+            'message': 'Where should it be?',
+        },
+        {
+            'type': 'checkbox',
+            'name': 'frameworks',
+            'message': 'What are you using?',
+            'choices': [dict(name=name) for name in TECHS]
+        }, 
+        {
+            'type': 'confirm',
+            'name': 'begin',
+            'message': 'Begin install?',
+            'default': False
+        }
+    ]
+
+    resp = prompt(form)
+    if not resp['begin'] or len(resp['frameworks']) == 0:
+        print('Canceling...')
+        return
+
+    for tech in resp['frameworks']:
+        TECHS[tech](resp['name'], resp['path']).setup()
+
+
+if __name__ == '__main__':
+    main()
