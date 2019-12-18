@@ -41,8 +41,8 @@ def get_temp_path():
 def chdir(path):
     try:
         os.mkdir(path)
-    except OSError:
-        pass
+    except OSError as e:
+        print('WARN:', path, e)
     os.chdir(path)
 
 

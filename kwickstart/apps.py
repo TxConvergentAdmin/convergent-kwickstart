@@ -46,7 +46,21 @@ class Yarn(App):
         install_msi(fn)
 
 
+class Expo(App):
+
+    NAME = 'Expo'
+
+    @property
+    def installed(self):
+        err, version = run_cmd('expo --version')
+        return not err
+
+    def install(self):
+        run_cmd('npm install -g expo-cli')
+
+
 APPS = {
-    'Yarn': Yarn(),
-    'NodeJS': NodeJS(),
+    'Yarn': Yarn,
+    'NodeJS': NodeJS,
+    'Expo': Expo
 }

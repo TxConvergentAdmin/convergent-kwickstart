@@ -28,7 +28,7 @@ def main():
         {
             'type': 'confirm',
             'name': 'begin',
-            'message': 'Begin install?',
+            'message': 'Begin setup?',
             'default': False
         }
     ]
@@ -39,7 +39,7 @@ def main():
         return
 
     for tech in resp['frameworks']:
-        TECHS[tech](resp['name'], resp['path']).setup()
+        TECHS[tech](resp['path'], resp['name']).setup()
 
 
 if __name__ == '__main__':
