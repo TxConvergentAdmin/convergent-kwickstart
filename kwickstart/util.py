@@ -1,6 +1,7 @@
 import urllib.request
 import subprocess
 import tempfile
+import zipfile
 import sys
 import os
 
@@ -42,7 +43,7 @@ def chdir(path):
     try:
         os.mkdir(path)
     except OSError as e:
-        print('WARN:', path, e)
+        pass
     os.chdir(path)
 
 
@@ -57,6 +58,12 @@ def download_file(url, name=None):
     fn = os.path.join(get_temp_path(), name)
     urllib.request.urlretrieve(url, fn)
     return fn
+
+
+def unzip_file(zip_name, output_path):
+    input_path = os.path.join(os.path.dirname(__file__), 'templates', zip_name)
+    with zipfile.ZipFile(input_path, 'r') as zip_ref:
+        zip_ref.extractall(output_path)
 
 
 def install_msi(fn):

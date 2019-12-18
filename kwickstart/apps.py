@@ -59,8 +59,24 @@ class Expo(App):
         run_cmd('npm install -g expo-cli')
 
 
+class Python(App):
+
+    NAME = 'Python'
+
+    @property
+    def installed(self):
+        err, version = run_cmd('python -c "import sys; print(sys.version)"')
+        return not err and version.startswith('3.')
+
+    def install(self):
+        assert SYS_NAME in ['windows']
+        fn = download_file('https://www.python.org/ftp/python/3.8.0/python-3.8.0.exe')
+        run_cmd(fn + ' /quiet Include_pip=1 PrependPath=1')
+
+
 APPS = {
     'Yarn': Yarn,
     'NodeJS': NodeJS,
-    'Expo': Expo
+    'Expo': Expo,
+    'Python': Python
 }

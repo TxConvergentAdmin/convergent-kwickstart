@@ -63,7 +63,27 @@ class ReactNative(Tech):
         run_cmd_external('expo start')
 
 
+class Flask(Tech):
+
+    NAME = 'Flask'
+    REQUIRE = ['Python']
+
+    def make(self):
+        chdir(self.dir)
+        self.flask_path = os.path.join(self.dir, 'flask')
+        chdir(self.flask_path)
+        unzip_file('flask.zip', self.flask_path)
+        run_cmd('pip install -r requirements.txt')
+        return True
+
+    def display(self):
+        chdir(self.flask_path)
+        open_dir(self.flask_path)
+        run_cmd_external('python app.py')
+
+
 TECHS = {
     'React': React,
-    'ReactNative': ReactNative
+    'ReactNative': ReactNative,
+    'Flask': Flask
 }
