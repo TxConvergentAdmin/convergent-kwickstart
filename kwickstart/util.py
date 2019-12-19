@@ -1,6 +1,7 @@
 import urllib.request
 import subprocess
 import tempfile
+import getpass
 import zipfile
 import sys
 import os
@@ -38,6 +39,10 @@ def get_default_path():
 
 def get_temp_path():
     return tempfile.gettempdir()
+
+
+def get_username():
+    return getpass.getuser().lower()
 
 
 def chdir(path):

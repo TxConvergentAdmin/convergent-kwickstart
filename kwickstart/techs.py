@@ -8,10 +8,11 @@ class Tech:
     NAME = 'AbstractTech'
     REQUIRE = []
 
-    def __init__(self, path, project, techs=[]):
+    def __init__(self, path, project, techs=[], github=None):
         self.dir = path
         self.project = project
         self.techs = techs
+        self.github = github
 
     def setup(self):
         self.install_dependencies()
@@ -31,29 +32,32 @@ class Tech:
         open_dir(self.dir)
 
 
-# class Github(Tech):
+GIT_IGNORE = """
+node_modules/
+__pycache__/
+*.pyc
+*.zip
+"""
+class Github(Tech):
 
-#     NAME = 'Github'
-#     REQUIRE = ['Git']
+    NAME = 'Github'
+    REQUIRE = ['Git']
 
-#     def make(self):
-#         chdir(self.dir)
-#         self.nlp_path = os.path.join(self.dir, '{}-nlp'.format(self.project))
-#         chdir(self.nlp_path)
-#         unzip_file('nlptools.zip', self.nlp_path)
-#         run_cmd('pip install virtualenv')
-#         run_cmd('virtualenv nlpenv')
-#         assert SYS_NAME in ['windows']
-#         # run_cmd('.\\nlpenv\\Scripts\\pip.exe install numpy gensim nltk textblob spacy')
-#         # run_cmd('.\\nlpenv\\Scripts\\python.exe -m textblob.download_corpora')
-#         download_file('https://github.com/TxConvergentAdmin/convergent/archive/test.zip', extract_path=self.nlp_path)
-#         # download_file('http://nlp.stanford.edu/software/stanford-corenlp-full-2018-10-05.zip', extract_path=self.nlp_path)
-#         return True
+    def make(self):
+        chdir(os.path.join(self.dir, '..'))
+        run_cmd('git clone {}'.format(self.github))
+        chdir(self.dir)
+        run_cmd('git checkout -b {}-edits'.format(get_username()))
 
-#     def display(self):
-#         chdir(self.nlp_path)
-#         open_dir(self.nlp_path)
-#         run_cmd_external('.\\nlpenv\\Scripts\\activate')
+        ignore_fn = os.path.join(self.dir, '.gitignore')
+        if not os.path.exists(ignore_fn):
+            with open(ignore_fn, 'w') as f:
+                f.write(GIT_IGNORE)
+
+        return True
+
+    def display(self):
+        pass
 
 
 class React(Tech):
@@ -63,8 +67,12 @@ class React(Tech):
 
     def make(self):
         chdir(self.dir)
-        err, res = run_cmd('yarn create react-app {}-react'.format(self.project))
         self.react_path = os.path.join(self.dir, self.project)
+        install_cmd = 'yarn create react-app {}-react'.format(self.project)
+        if os.path.exists(self.react_path):
+            chdir(self.react_path)
+            install_cmd = 'yarn install'
+        err, res = run_cmd(install_cmd)
         return not err
 
     def display(self):
@@ -80,8 +88,12 @@ class ReactNative(Tech):
 
     def make(self):
         chdir(self.dir)
-        err, res = run_cmd('expo init -t tabs --npm --non-interactive --name {0} {0}-rn'.format(self.project))
+        install_cmd = 'expo init -t tabs --npm --non-interactive --name {0} {0}-rn'.format(self.project)
         self.expo_path = os.path.join(self.dir, self.project)
+        if os.path.exists(self.react_path):
+            chdir(self.expo_path)
+            install_cmd = 'npm install'
+        err, res = run_cmd(install_cmd)
         return not err
 
     def display(self):
@@ -98,8 +110,10 @@ class Flask(Tech):
     def make(self):
         chdir(self.dir)
         self.flask_path = os.path.join(self.dir, '{}-flask'.format(self.project))
+        exists = os.path.exists(self.flask_path)
         chdir(self.flask_path)
-        unzip_file('flask.zip', self.flask_path)
+        if not exists:
+            unzip_file('flask.zip', self.flask_path)
         run_cmd('pip install -r requirements.txt')
         return True
 
@@ -133,6 +147,7 @@ class NLPTools(Tech):
         run_cmd_external('.\\nlpenv\\Scripts\\activate')
 
 
+# The order here matters (Github should be first)
 TECHS = {
     'Github': Github,
     'NLP Tools': NLPTools,

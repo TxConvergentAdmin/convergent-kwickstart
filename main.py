@@ -26,6 +26,13 @@ def main():
             'choices': [dict(name=name) for name in TECHS]
         }, 
         {
+            'type': 'input',
+            'name': 'github',
+            'default': lambda resp: 'https://github.com/TxConvergentAdmin/' + resp['name'],
+            'when': lambda resp: 'Github' in resp['frameworks'],
+            'message': 'What GitHub repo are you using?'
+        },
+        {
             'type': 'confirm',
             'name': 'begin',
             'message': 'Begin setup?',
@@ -38,8 +45,15 @@ def main():
         print('Canceling...')
         return
 
+    if 'github' in resp:
+        resp['github'] = resp['github'].replace('.git', '')
+        if os.path.basename(resp['github']) != os.path.basename(resp['path']):
+            print('The project folder must match the Github repo name!')
+            return
+
     for tech in resp['frameworks']:
-        TECHS[tech](resp['path'], resp['name'], resp['frameworks']).setup()
+        TECHS[tech](resp['path'], resp['name'], 
+            techs=resp['frameworks'], github=resp.get('github')).setup()
 
 
 if __name__ == '__main__':
