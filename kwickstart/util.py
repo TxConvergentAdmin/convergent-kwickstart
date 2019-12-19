@@ -16,6 +16,7 @@ SYS_NAME = {
 
 
 def run_cmd(cmdline):
+    print('[?] $ ' + cmdline)
     try:
         ret = subprocess.check_output(cmdline, shell=True)
         return False, ret.decode("utf-8").strip()
@@ -53,6 +54,7 @@ def open_dir(path):
 
 
 def download_file(url, name=None):
+    print('[?] Downloading ' + url)
     if name is None:
         name = os.path.basename(url)
     fn = os.path.join(get_temp_path(), name)
@@ -61,6 +63,7 @@ def download_file(url, name=None):
 
 
 def unzip_file(zip_name, output_path):
+    print('[?] Extracting ' + zip_name)
     input_path = os.path.join(os.path.dirname(__file__), 'templates', zip_name)
     with zipfile.ZipFile(input_path, 'r') as zip_ref:
         zip_ref.extractall(output_path)
@@ -68,15 +71,3 @@ def unzip_file(zip_name, output_path):
 
 def install_msi(fn):
     run_cmd('"{}" /quiet /qn /norestart'.format(fn))
-
-
-class PrintProgress:
-
-    def __init__(self, prefix):
-        self.prefix = prefix
-
-    def __enter__(self):
-        print(self.prefix + '...', end='')
-
-    def __exit__(self, *args):
-        print('done.')

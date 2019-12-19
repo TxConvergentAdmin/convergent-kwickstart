@@ -34,7 +34,7 @@ def main():
     ]
 
     resp = prompt(form)
-    if not resp['begin'] or len(resp['frameworks']) == 0:
+    if not resp.get('begin') or len(resp['frameworks']) == 0:
         print('Canceling...')
         return
 

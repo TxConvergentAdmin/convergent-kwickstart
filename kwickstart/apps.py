@@ -3,10 +3,12 @@ from .util import *
 
 class App:
 
+    NAME = 'AbstractApp'
+
     def ensure_installed(self):
-        with PrintProgress('Installing ' + self.NAME):
-            if not self.installed:
-                self.install()
+        print('[+] Installing ' + self.NAME)
+        if not self.installed:
+            self.install()
 
     @property
     def installed(self):

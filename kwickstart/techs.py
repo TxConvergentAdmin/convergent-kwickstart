@@ -5,16 +5,18 @@ import os
 
 class Tech:
 
-    def __init__(self, path, project):
+    NAME = 'AbstractTech'
+    REQUIRE = []
+
+    def __init__(self, path, project, techs=[]):
         self.dir = path
         self.project = project
+        self.techs = techs
 
     def setup(self):
         self.install_dependencies()
-        success = False
-        with PrintProgress('Setting up ' + self.NAME):
-            success = self.make()
-        if success:
+        print('[+] Setting up ' + self.NAME)
+        if self.make():
             self.display()
 
     def install_dependencies(self):
@@ -36,7 +38,7 @@ class React(Tech):
 
     def make(self):
         chdir(self.dir)
-        err, res = run_cmd('yarn create react-app ' + self.project)
+        err, res = run_cmd('yarn create react-app {}-react'.format(self.project))
         self.react_path = os.path.join(self.dir, self.project)
         return not err
 
@@ -53,7 +55,7 @@ class ReactNative(Tech):
 
     def make(self):
         chdir(self.dir)
-        err, res = run_cmd('expo init -t tabs --npm --non-interactive --name {0} {0}'.format(self.project))
+        err, res = run_cmd('expo init -t tabs --npm --non-interactive --name {0} {0}-rn'.format(self.project))
         self.expo_path = os.path.join(self.dir, self.project)
         return not err
 
@@ -70,7 +72,7 @@ class Flask(Tech):
 
     def make(self):
         chdir(self.dir)
-        self.flask_path = os.path.join(self.dir, 'flask')
+        self.flask_path = os.path.join(self.dir, '{}-flask'.format(self.project))
         chdir(self.flask_path)
         unzip_file('flask.zip', self.flask_path)
         run_cmd('pip install -r requirements.txt')
