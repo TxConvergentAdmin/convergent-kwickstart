@@ -41,14 +41,15 @@ def main():
     ]
 
     resp = prompt(form)
+    log_file(resp)
     if not resp.get('begin') or len(resp['frameworks']) == 0:
-        print('Canceling...')
+        log('Canceling...')
         return
 
     if 'github' in resp:
         resp['github'] = resp['github'].replace('.git', '')
         if os.path.basename(resp['github']) != os.path.basename(resp['path']):
-            print('The project folder must match the Github repo name!')
+            log('The project folder must match the Github repo name!')
             return
 
     for tech in resp['frameworks']:

@@ -16,7 +16,7 @@ class Tech:
 
     def setup(self):
         self.install_dependencies()
-        print('[+] Setting up ' + self.NAME)
+        log('[+] Setting up ' + self.NAME)
         if self.make():
             self.display()
 

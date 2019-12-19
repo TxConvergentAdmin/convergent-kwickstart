@@ -1,3 +1,4 @@
+from datetime import datetime
 import urllib.request
 import subprocess
 import tempfile
@@ -17,11 +18,13 @@ SYS_NAME = {
 
 
 def run_cmd(cmdline):
-    print('[?]  $ ' + cmdline)
+    log('[?]  $ ' + cmdline)
     try:
         ret = subprocess.check_output(cmdline, shell=True)
+        log_file('cmd succeeded ' + cmdline)
         return False, ret.decode("utf-8").strip()
     except subprocess.CalledProcessError:
+        log_file('cmd error ' + cmdline)
         return True, ''
 
 
@@ -59,7 +62,7 @@ def open_dir(path):
 
 
 def download_file(url, name=None, extract_path=None):
-    print('[?]  Loading ' + url)
+    log('[?]  Loading ' + url)
     if name is None:
         name = os.path.basename(url)
     fn = os.path.join(get_temp_path(), name)
@@ -71,7 +74,7 @@ def download_file(url, name=None, extract_path=None):
 
 
 def unzip_file(zip_name, output_path):
-    print('[?]  Loading ' + zip_name)
+    log('[?]  Loading ' + zip_name)
     input_path = os.path.join(os.path.dirname(__file__), 'templates', zip_name)
     with zipfile.ZipFile(input_path, 'r') as zip_ref:
         zip_ref.extractall(output_path)
@@ -79,3 +82,16 @@ def unzip_file(zip_name, output_path):
 
 def install_msi(fn):
     run_cmd('"{}" /quiet /qn /norestart'.format(fn))
+
+
+def log(msg):
+    msg = str(msg)
+    log_file(msg)
+    print(msg)
+
+
+def log_file(info):
+    info = str(info)
+    log_fn = os.path.join(get_temp_path(), 'kwickstart.log')
+    with open(log_fn, 'a') as f:
+        f.write('{}|{}|{}\n'.format(datetime.now().timestamp(), SYS_NAME, info))

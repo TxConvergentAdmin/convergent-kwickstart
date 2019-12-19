@@ -6,7 +6,7 @@ class App:
     NAME = 'AbstractApp'
 
     def ensure_installed(self):
-        print('[+] Installing ' + self.NAME)
+        log('[+] Installing ' + self.NAME)
         if not self.installed:
             self.install()
 
