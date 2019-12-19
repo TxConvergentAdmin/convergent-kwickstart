@@ -39,7 +39,7 @@ def main():
         return
 
     for tech in resp['frameworks']:
-        TECHS[tech](resp['path'], resp['name']).setup()
+        TECHS[tech](resp['path'], resp['name'], resp['frameworks']).setup()
 
 
 if __name__ == '__main__':

@@ -18,6 +18,21 @@ class App:
         pass
 
 
+class Git(App):
+
+    NAME = 'Git'
+
+    @property
+    def installed(self):
+        err, version = run_cmd('git --version')
+        return not err
+
+    def install(self):
+        assert SYS_NAME in ['windows']
+        fn = download_file('https://github.com/git-for-windows/git/releases/download/v2.24.1.windows.2/Git-2.24.1.2-64-bit.exe')
+        run_cmd(fn + ' /VERYSILENT /NORESTART /SP-')
+
+
 class NodeJS(App):
 
     NAME = 'NodeJS'
@@ -77,6 +92,7 @@ class Python(App):
 
 
 APPS = {
+    'Git': Git,
     'Yarn': Yarn,
     'NodeJS': NodeJS,
     'Expo': Expo,

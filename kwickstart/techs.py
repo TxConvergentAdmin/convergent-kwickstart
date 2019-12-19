@@ -20,6 +20,8 @@ class Tech:
             self.display()
 
     def install_dependencies(self):
+        if 'Git' not in self.REQUIRE:
+            self.REQUIRE.append('Git')
         for app_name in self.REQUIRE:
             APPS[app_name]().ensure_installed()
 

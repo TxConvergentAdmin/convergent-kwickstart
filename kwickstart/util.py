@@ -16,7 +16,7 @@ SYS_NAME = {
 
 
 def run_cmd(cmdline):
-    print('[?] $ ' + cmdline)
+    print('[?]  $ ' + cmdline)
     try:
         ret = subprocess.check_output(cmdline, shell=True)
         return False, ret.decode("utf-8").strip()
@@ -54,7 +54,7 @@ def open_dir(path):
 
 
 def download_file(url, name=None):
-    print('[?] Downloading ' + url)
+    print('[?]  Loading ' + url)
     if name is None:
         name = os.path.basename(url)
     fn = os.path.join(get_temp_path(), name)
@@ -63,7 +63,7 @@ def download_file(url, name=None):
 
 
 def unzip_file(zip_name, output_path):
-    print('[?] Extracting ' + zip_name)
+    print('[?]  Loading ' + zip_name)
     input_path = os.path.join(os.path.dirname(__file__), 'templates', zip_name)
     with zipfile.ZipFile(input_path, 'r') as zip_ref:
         zip_ref.extractall(output_path)
