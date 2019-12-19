@@ -53,12 +53,15 @@ def open_dir(path):
         os.startfile(path)
 
 
-def download_file(url, name=None):
+def download_file(url, name=None, extract_path=None):
     print('[?]  Loading ' + url)
     if name is None:
         name = os.path.basename(url)
     fn = os.path.join(get_temp_path(), name)
     urllib.request.urlretrieve(url, fn)
+    if fn.endswith('.zip') and extract_path is not None:
+        with zipfile.ZipFile(fn, 'r') as zip_ref:
+            zip_ref.extractall(os.path.join(extract_path, name.replace('.zip', '')))
     return fn
 
 

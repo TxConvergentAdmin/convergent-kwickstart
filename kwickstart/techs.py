@@ -20,8 +20,6 @@ class Tech:
             self.display()
 
     def install_dependencies(self):
-        if 'Git' not in self.REQUIRE:
-            self.REQUIRE.append('Git')
         for app_name in self.REQUIRE:
             APPS[app_name]().ensure_installed()
 
@@ -31,6 +29,31 @@ class Tech:
 
     def display(self):
         open_dir(self.dir)
+
+
+# class Github(Tech):
+
+#     NAME = 'Github'
+#     REQUIRE = ['Git']
+
+#     def make(self):
+#         chdir(self.dir)
+#         self.nlp_path = os.path.join(self.dir, '{}-nlp'.format(self.project))
+#         chdir(self.nlp_path)
+#         unzip_file('nlptools.zip', self.nlp_path)
+#         run_cmd('pip install virtualenv')
+#         run_cmd('virtualenv nlpenv')
+#         assert SYS_NAME in ['windows']
+#         # run_cmd('.\\nlpenv\\Scripts\\pip.exe install numpy gensim nltk textblob spacy')
+#         # run_cmd('.\\nlpenv\\Scripts\\python.exe -m textblob.download_corpora')
+#         download_file('https://github.com/TxConvergentAdmin/convergent/archive/test.zip', extract_path=self.nlp_path)
+#         # download_file('http://nlp.stanford.edu/software/stanford-corenlp-full-2018-10-05.zip', extract_path=self.nlp_path)
+#         return True
+
+#     def display(self):
+#         chdir(self.nlp_path)
+#         open_dir(self.nlp_path)
+#         run_cmd_external('.\\nlpenv\\Scripts\\activate')
 
 
 class React(Tech):
@@ -52,7 +75,7 @@ class React(Tech):
 
 class ReactNative(Tech):
 
-    NAME = 'ReactNative'
+    NAME = 'React Native'
     REQUIRE = ['NodeJS', 'Expo']
 
     def make(self):
@@ -86,8 +109,34 @@ class Flask(Tech):
         run_cmd_external('python app.py')
 
 
+class NLPTools(Tech):
+
+    NAME = 'NLP Tools'
+    REQUIRE = ['Python']
+
+    def make(self):
+        chdir(self.dir)
+        self.nlp_path = os.path.join(self.dir, '{}-nlp'.format(self.project))
+        chdir(self.nlp_path)
+        unzip_file('nlptools.zip', self.nlp_path)
+        run_cmd('pip install virtualenv')
+        run_cmd('virtualenv nlpenv')
+        assert SYS_NAME in ['windows']
+        run_cmd('.\\nlpenv\\Scripts\\pip.exe install numpy gensim nltk textblob spacy')
+        run_cmd('.\\nlpenv\\Scripts\\python.exe -m textblob.download_corpora')
+        download_file('http://nlp.stanford.edu/software/stanford-corenlp-full-2018-10-05.zip', extract_path=self.nlp_path)
+        return True
+
+    def display(self):
+        chdir(self.nlp_path)
+        open_dir(self.nlp_path)
+        run_cmd_external('.\\nlpenv\\Scripts\\activate')
+
+
 TECHS = {
+    'Github': Github,
+    'NLP Tools': NLPTools,
     'React': React,
-    'ReactNative': ReactNative,
+    'React Native': ReactNative,
     'Flask': Flask
 }

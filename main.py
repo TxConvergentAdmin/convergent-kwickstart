@@ -11,7 +11,7 @@ def main():
             'type': 'input',
             'name': 'name',
             'default': 'cvgt-project',
-            'message': 'What the name of the project?',
+            'message': 'What\'s the name of the project?',
         },
         {
             'type': 'input',
@@ -22,7 +22,7 @@ def main():
         {
             'type': 'checkbox',
             'name': 'frameworks',
-            'message': 'What are you using?',
+            'message': 'What do you want to use?',
             'choices': [dict(name=name) for name in TECHS]
         }, 
         {
