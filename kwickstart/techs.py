@@ -78,7 +78,7 @@ class React(Tech):
     def display(self):
         open_dir(self.react_path)
         chdir(self.react_path)
-        run_cmd_external('yarn start')
+        run_cmd('yarn start', external=True)
 
 
 class ReactNative(Tech):
@@ -99,7 +99,7 @@ class ReactNative(Tech):
     def display(self):
         open_dir(self.expo_path)
         chdir(self.expo_path)
-        run_cmd_external('expo start')
+        run_cmd('expo start', external=True)
 
 
 class Flask(Tech):
@@ -114,13 +114,13 @@ class Flask(Tech):
         chdir(self.flask_path)
         if not exists:
             unzip_file('flask.zip', self.flask_path)
-        run_cmd('pip install -r requirements.txt')
+        run_cmd('pip install -r requirements.txt', correct_python=True)
         return True
 
     def display(self):
         chdir(self.flask_path)
         open_dir(self.flask_path)
-        run_cmd_external('python app.py')
+        run_cmd('python app.py', correct_python=True, external=True)
 
 
 class NLPTools(Tech):
@@ -129,22 +129,26 @@ class NLPTools(Tech):
     REQUIRE = ['Python']
 
     def make(self):
+        assert SYS_NAME in ['windows', 'osx']
         chdir(self.dir)
         self.nlp_path = os.path.join(self.dir, '{}-nlp'.format(self.project))
         chdir(self.nlp_path)
         unzip_file('nlptools.zip', self.nlp_path)
-        run_cmd('pip install virtualenv')
-        run_cmd('virtualenv nlpenv')
-        assert SYS_NAME in ['windows']
-        run_cmd('.\\nlpenv\\Scripts\\pip.exe install numpy gensim nltk textblob spacy')
-        run_cmd('.\\nlpenv\\Scripts\\python.exe -m textblob.download_corpora')
+        run_cmd('pip install virtualenv', correct_python=True)
+        run_cmd('python -m virtualenv nlpenv')
+        if SYS_NAME == 'windows':
+            pyext = '.exe'
+        else:
+            pyext = ''
+        run_cmd('.\\nlpenv\\Scripts\\pip{} install numpy gensim nltk textblob spacy'.format(pyext))
+        run_cmd('.\\nlpenv\\Scripts\\python{} -m textblob.download_corpora'.format(pyext))
         download_file('http://nlp.stanford.edu/software/stanford-corenlp-full-2018-10-05.zip', extract_path=self.nlp_path)
         return True
 
     def display(self):
         chdir(self.nlp_path)
         open_dir(self.nlp_path)
-        run_cmd_external('.\\nlpenv\\Scripts\\activate')
+        run_cmd('.\\nlpenv\\Scripts\\activate', external=True)
 
 
 # The order here matters (Github should be first)

@@ -28,10 +28,13 @@ class Git(App):
         return not err
 
     def install(self):
-        assert SYS_NAME in ['windows']
-        fn = download_file('https://github.com/git-for-windows/git/releases/download/v2.24.1.windows.2/Git-2.24.1.2-64-bit.exe')
-        run_cmd(fn + ' /VERYSILENT /NORESTART /SP-')
-
+        assert SYS_NAME in ['windows', 'osx']
+        if SYS_NAME == 'windows':
+            fn = download_file('https://github.com/git-for-windows/git/releases/download/v2.24.1.windows.2/Git-2.24.1.2-64-bit.exe')
+            run_cmd(fn + ' /VERYSILENT /NORESTART /SP-')
+        elif SYS_NAME == 'osx':
+            fn = download_file('https://astuteinternet.dl.sourceforge.net/project/git-osx-installer/git-2.23.0-intel-universal-mavericks.dmg')
+            install_dmg(fn, 'Git 2.23.0 Mavericks Intel Universal', 'git-2.23.0-intel-universal-mavericks.pkg')
 
 class NodeJS(App):
 
@@ -43,9 +46,13 @@ class NodeJS(App):
         return not err
 
     def install(self):
-        assert SYS_NAME in ['windows']
-        fn = download_file('https://nodejs.org/dist/v12.14.0/node-v12.14.0-x64.msi')
-        install_msi(fn)
+        assert SYS_NAME in ['windows', 'osx']
+        if SYS_NAME == 'windows':
+            fn = download_file('https://nodejs.org/dist/v12.14.0/node-v12.14.0-x64.msi')
+            install_msi(fn)
+        elif SYS_NAME == 'osx':
+            fn = download_file('https://nodejs.org/dist/v12.14.0/node-v12.14.0.pkg')
+            install_pkg(fn)
 
 
 class Yarn(App):
@@ -58,9 +65,12 @@ class Yarn(App):
         return not err
 
     def install(self):
-        assert SYS_NAME in ['windows']
-        fn = download_file('https://yarnpkg.com/latest.msi')
-        install_msi(fn)
+        assert SYS_NAME in ['windows', 'osx']
+        if SYS_NAME == 'windows':
+            fn = download_file('https://yarnpkg.com/latest.msi')
+            install_msi(fn)
+        elif SYS_NAME == 'osx':
+            run_cmd('brew install yarn')
 
 
 class Expo(App):
@@ -83,12 +93,18 @@ class Python(App):
     @property
     def installed(self):
         err, version = run_cmd('python -c "import sys; print(sys.version)"')
+        if not version.startswith('3.'):
+            err, version = run_cmd('python3 -c "import sys; print(sys.version)"')
         return not err and version.startswith('3.')
 
     def install(self):
-        assert SYS_NAME in ['windows']
-        fn = download_file('https://www.python.org/ftp/python/3.8.0/python-3.8.0.exe')
-        run_cmd(fn + ' /quiet Include_pip=1 PrependPath=1')
+        assert SYS_NAME in ['windows', 'osx']
+        if SYS_NAME == 'windows':
+            fn = download_file('https://www.python.org/ftp/python/3.8.0/python-3.8.0.exe')
+            run_cmd(fn + ' /quiet Include_pip=1 PrependPath=1')
+        elif SYS_NAME == 'osx':
+            fn = download_file('https://www.python.org/ftp/python/3.8.1/python-3.8.1-macosx10.9.pkg')
+            install_pkg(fn)
 
 
 APPS = {

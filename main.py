@@ -5,7 +5,7 @@ import os
 
 
 def main():
-
+    
     form = [
         {
             'type': 'input',

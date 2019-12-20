@@ -1,0 +1,2 @@
+PyInstaller==3.5
+PyInquirer==1.0.3
