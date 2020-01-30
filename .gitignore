@@ -3,3 +3,4 @@ build/
 *.pyc
 node_modules/
 *.zip
+*.spec

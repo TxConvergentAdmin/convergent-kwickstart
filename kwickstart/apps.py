@@ -86,6 +86,7 @@ class Expo(App):
         run_cmd('npm install -g expo-cli')
 
 
+PY_VERSION = '3.7.4'
 class Python(App):
 
     NAME = 'Python'
@@ -100,10 +101,10 @@ class Python(App):
     def install(self):
         assert SYS_NAME in ['windows', 'osx']
         if SYS_NAME == 'windows':
-            fn = download_file('https://www.python.org/ftp/python/3.8.0/python-3.8.0.exe')
+            fn = download_file('https://www.python.org/ftp/python/{0}/python-{0}.exe'.format(PY_VERSION))
             run_cmd(fn + ' /quiet Include_pip=1 PrependPath=1')
         elif SYS_NAME == 'osx':
-            fn = download_file('https://www.python.org/ftp/python/3.8.1/python-3.8.1-macosx10.9.pkg')
+            fn = download_file('https://www.python.org/ftp/python/{0}/python-{0}-macosx10.6.pkg'.format(PY_VERSION))
             install_pkg(fn)
 
 

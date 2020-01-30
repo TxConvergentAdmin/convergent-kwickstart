@@ -17,11 +17,22 @@ SYS_NAME = {
 }[sys.platform]
 
 
-def run_cmd(cmdline, external=False, correct_python=False):
+COMMON_BIN_PATHS = {
+    ('windows', 'git'): r'"C:\Program Files\Git\cmd\git.exe"',
+    ('windows', 'yarn'): r'"C:\Program Files\Yarn\bin\yarn"',
+    ('windows', 'node'): r'"C:\Program Files\nodejs\node.exe"'
+}
+
+
+def run_cmd(cmdline, external=False, fix_bin_path=True, correct_python=False):
     if correct_python:
         suffix = get_python_suffix()
         cmdline = cmdline.replace('pip ', 'pip' + suffix + ' ')
         cmdline = cmdline.replace('python ', 'python' + suffix + ' ')
+    if fix_bin_path:
+        bin_name, extra = cmdline.split(None, 1)
+        if (SYS_NAME, bin_name) in COMMON_BIN_PATHS:
+            cmdline = COMMON_BIN_PATHS[(SYS_NAME, bin_name)] + ' ' + extra
     log('[?]  $ ' + cmdline)
     if not external:
         try:
@@ -53,7 +64,7 @@ def _run_cmd_external(cmdline, _save={'cnt': 0}):
 def get_python_suffix(_save={}):
     if 'return' in _save:
         return _save['return']
-    for suffix in ['', '3', '3.8']:
+    for suffix in ['', '3', '3.7']:
         err, version = run_cmd('python{} -c "import sys; print(sys.version)"'.format(suffix))
         if version.startswith('3.'):
             _save['return'] = suffix
@@ -133,4 +144,4 @@ def log_file(info):
     info = str(info)
     log_fn = os.path.join(get_temp_path(), 'kwickstart.log')
     with open(log_fn, 'a') as f:
-        f.write('{}|{}|{}\n'.format(datetime.now().timestamp(), SYS_NAME, info))
+        f.write('{}|{}|{}|{}\n'.format(datetime.now().timestamp(), os.getcwd(), SYS_NAME, info))
