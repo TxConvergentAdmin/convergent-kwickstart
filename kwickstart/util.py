@@ -16,10 +16,10 @@ SYS_NAME = {
     'win64': 'windows'
 }[sys.platform]
 
-
+FROZEN = getattr(sys, 'frozen', False)
 COMMON_BIN_PATHS = {
     ('windows', 'git'): r'"C:\Program Files\Git\cmd\git.exe"',
-    ('windows', 'yarn'): r'"C:\Program Files\Yarn\bin\yarn"',
+    ('windows', 'yarn'): r'"C:\Program Files (x86)\Yarn\bin\yarn"',
     ('windows', 'node'): r'"C:\Program Files\nodejs\node.exe"'
 }
 
@@ -32,7 +32,12 @@ def run_cmd(cmdline, external=False, fix_bin_path=True, correct_python=False):
     if fix_bin_path:
         bin_name, extra = cmdline.split(None, 1)
         if (SYS_NAME, bin_name) in COMMON_BIN_PATHS:
-            cmdline = COMMON_BIN_PATHS[(SYS_NAME, bin_name)] + ' ' + extra
+            new_cmdline = COMMON_BIN_PATHS[(SYS_NAME, bin_name)] + ' ' + extra
+            err, msg = run_cmd(new_cmdline, external=external, 
+                fix_bin_path=False, correct_python=correct_python)
+            if not err:
+                return (err, msg)
+            log('Common bin path failed...falling back to alias')
     log('[?]  $ ' + cmdline)
     if not external:
         try:
@@ -113,8 +118,11 @@ def download_file(url, name=None, extract_path=None):
 
 
 def unzip_file(zip_name, output_path):
-    log('[?]  Loading ' + zip_name)
-    input_path = os.path.join(os.path.dirname(__file__), 'templates', zip_name)
+    if FROZEN:
+        input_path = os.path.join(sys._MEIPASS, 'templates', zip_name)
+    else:
+        input_path = os.path.join(os.path.dirname(__file__), 'templates', zip_name)
+    log('[?]  Loading ' + zip_name + ' ' + input_path)
     with zipfile.ZipFile(input_path, 'r') as zip_ref:
         zip_ref.extractall(output_path)
 
@@ -143,5 +151,5 @@ def log(msg):
 def log_file(info):
     info = str(info)
     log_fn = os.path.join(get_temp_path(), 'kwickstart.log')
-    with open(log_fn, 'a') as f:
+    with open(log_fn, 'a', encoding='utf-8') as f:
         f.write('{}|{}|{}|{}\n'.format(datetime.now().timestamp(), os.getcwd(), SYS_NAME, info))

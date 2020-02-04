@@ -36,7 +36,7 @@ def main():
             'type': 'confirm',
             'name': 'begin',
             'message': 'Begin setup?',
-            'default': False
+            'default': True
         }
     ]
 

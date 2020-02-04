@@ -1,5 +1,6 @@
 @echo off
 del /f Kwickstart.spec
-rmdir /s /q build
-rmdir /s /q dist
-pyinstaller --clean -c -F -n Kwickstart --icon=logo.ico --uac-admin .\main.py
+pyinstaller --clean -c -F -n Kwickstart --icon=logo.ico --uac-admin ^
+--add-data kwickstart/templates/flask.zip;templates ^
+--add-data kwickstart/templates/nlptools.zip;templates ^
+.\main.py

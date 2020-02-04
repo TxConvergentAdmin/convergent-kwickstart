@@ -90,7 +90,7 @@ class ReactNative(Tech):
         chdir(self.dir)
         install_cmd = 'expo init -t tabs --npm --non-interactive --name {0} {0}-rn'.format(self.project)
         self.expo_path = os.path.join(self.dir, self.project)
-        if os.path.exists(self.react_path):
+        if os.path.exists(self.expo_path):
             chdir(self.expo_path)
             install_cmd = 'npm install'
         err, res = run_cmd(install_cmd)
