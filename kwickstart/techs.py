@@ -97,9 +97,22 @@ class ReactNative(Tech):
         return not err
 
     def display(self):
-        open_dir(self.expo_path)
-        chdir(self.expo_path)
-        run_cmd('expo start', external=True)
+        pass
+
+
+class Firebase(Tech):
+
+    NAME = 'Firebase'
+    REQUIRE = ['NodeJS']
+
+    def make(self):
+        chdir(self.dir)
+        run_cmd('npm install -g firebase')
+        err, res = run_cmd('firebase init', external=True)
+        return not err
+
+    def display(self):
+        pass
 
 
 class Flask(Tech):
@@ -157,5 +170,6 @@ TECHS = {
     'NLP Tools': NLPTools,
     'React': React,
     'React Native': ReactNative,
-    'Flask': Flask
+    'Flask': Flask,
+    'Firebase': Firebase,
 }
