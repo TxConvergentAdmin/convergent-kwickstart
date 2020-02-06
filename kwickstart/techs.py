@@ -8,16 +8,18 @@ class Tech:
     NAME = 'AbstractTech'
     REQUIRE = []
 
-    def __init__(self, path, project, techs=[], github=None):
+    def __init__(self, path, project, options, techs=[], github=None):
         self.dir = path
         self.project = project
         self.techs = techs
         self.github = github
+        self.options = options
 
     def setup(self):
         self.install_dependencies()
         log('[+] Setting up ' + self.NAME)
         if self.make():
+            options[self.NAME] = True
             self.display()
 
     def install_dependencies(self):
@@ -164,7 +166,7 @@ class NLPTools(Tech):
         run_cmd('.\\nlpenv\\Scripts\\activate', external=True)
 
 
-# The order here matters (Github should be first)
+# The order here matters (Github should be first, Backends should prob be last)
 TECHS = {
     'Github': Github,
     'NLP Tools': NLPTools,

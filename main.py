@@ -52,8 +52,9 @@ def main():
             log('The project folder must match the Github repo name!')
             return
 
+    options = {}
     for tech in resp['frameworks']:
-        TECHS[tech](resp['path'], resp['name'], 
+        TECHS[tech](resp['path'], resp['name'], options,
             techs=resp['frameworks'], github=resp.get('github')).setup()
 
 
